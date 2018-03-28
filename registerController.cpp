@@ -8,6 +8,7 @@ registerController::registerController(StoreInventory * inventory, order * check
 {
   database = inventory;
   cart = checkout;
+  cart->addObserver(this);
 }
 
 void registerController::processOrder()
@@ -24,6 +25,7 @@ void registerController::processOrder()
     {
       item add = database->lookup((int)option);
       cart->addItem(add);
+      update();
     }
     else if(command.compare("pay") != 0)
     {
@@ -34,4 +36,9 @@ void registerController::processOrder()
   }while( command.compare("pay") != 0 );
   cart->balance(option);
   screen.displayFinalReceipt(*cart);
+}
+
+void registerController::update()
+{
+  screen.displayRunningTotal(*cart);
 }
